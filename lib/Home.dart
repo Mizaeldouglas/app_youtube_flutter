@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:youtube_flutter/screens/biblioteca.dart';
-import 'package:youtube_flutter/screens/em_alta.dart';
-import 'package:youtube_flutter/screens/inicio.dart';
-import 'package:youtube_flutter/screens/inscricao.dart';
+import 'package:clone_youtube_flutter/CustomSearchDelegate.dart';
+import 'package:clone_youtube_flutter/screens/biblioteca.dart';
+import 'package:clone_youtube_flutter/screens/em_alta.dart';
+import 'package:clone_youtube_flutter/screens/inicio.dart';
+import 'package:clone_youtube_flutter/screens/inscricao.dart';
 
 class Home extends StatefulWidget {
+
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
 
+  String _resultado = "";
   int _indiceAtual = 0;
 
   @override
   Widget build(BuildContext context) {
+
+
+
     List<Widget> telas = [
-      Inicio(),
+      Inicio(_resultado),
       EmAlta(),
       Inscricao(),
       Biblioteca(),
@@ -34,16 +40,22 @@ class _HomeState extends State<Home> {
           height: 30,
         ),
         actions: <Widget>[
+
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () async {
+              String res = await showSearch(context: context, delegate: CustomSearchDelegate());
+              setState(() {
+                _resultado = res;
+              });
+
+              },
+          ),
+
           IconButton(
             icon: Icon(Icons.videocam),
             onPressed: (){
               print('Pressed videocam');
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: (){
-              print('Pressed search');
             },
           ),
           IconButton(
@@ -52,9 +64,14 @@ class _HomeState extends State<Home> {
               print('Pressed account_circle');
             },
           ),
+
+
         ],
       ),
-      body: telas[_indiceAtual],
+      body: Container(
+          padding: EdgeInsets.all(16),
+          child: telas[_indiceAtual]
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _indiceAtual,
         onTap: (indice){
