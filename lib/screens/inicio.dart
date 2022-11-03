@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter_youtube/flutter_youtube.dart';
-import 'package:clone_youtube_flutter/Api.dart';
+import 'package:clone_youtube_flutter/apis/Api.dart';
 import 'package:clone_youtube_flutter/model/Video.dart';
 
-
 class Inicio extends StatefulWidget {
+
   String pesquisa;
 
   Inicio( this.pesquisa );
@@ -16,49 +16,58 @@ class Inicio extends StatefulWidget {
 class _InicioState extends State<Inicio> {
 
   _listarVideos(String pesquisa){
+
     Api api = Api();
-    return api.pesquisar(pesquisa);
+    return api.pesquisar( pesquisa );
+
   }
 
   @override
   void initState() {
-
     super.initState();
+    print("chamado 1 - initState");
   }
+
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
+    print("chamado 2 - didChangeDependencies");
+  }
+
+  @override
+  void didUpdateWidget(Inicio oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("chamado 2 - didUpdateWidget");
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
+    print("chamado 4 - dispose");
   }
-
 
   @override
   Widget build(BuildContext context) {
 
-
+    print("chamado 3 - build");
 
     return FutureBuilder<List<Video>>(
-      future: _listarVideos(widget.pesquisa),
-      builder: (context,snapshot){
-        switch( snapshot.connectionState ) {
-          case ConnectionState.none:
-          case ConnectionState.waiting:
+      future: _listarVideos( widget.pesquisa ),
+      builder: (contex, snapshot){
+        switch( snapshot.connectionState ){
+          case ConnectionState.none :
+          case ConnectionState.waiting :
             return Center(
               child: CircularProgressIndicator(),
             );
             break;
-          case ConnectionState.active:
-          case ConnectionState.done:
+          case ConnectionState.active :
+          case ConnectionState.done :
             if( snapshot.hasData ){
 
               return ListView.separated(
-                  itemBuilder: (context, index) {
+                  itemBuilder: (context, index){
+
                     List<Video> videos = snapshot.data;
                     Video video = videos[ index ];
 
@@ -66,7 +75,9 @@ class _InicioState extends State<Inicio> {
                       onTap: (){
                         // FlutterYoutube.playYoutubeVideoById(
                         //     apiKey: CHAVE_YOUTUBE_API,
-                        //     videoId: video.id
+                        //     videoId: video.id,
+                        //     autoPlay: true,
+                        //     fullScreen: true
                         // );
                       },
                       child: Column(
@@ -74,10 +85,10 @@ class _InicioState extends State<Inicio> {
                           Container(
                             height: 200,
                             decoration: BoxDecoration(
-                              image: DecorationImage(
+                                image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: NetworkImage(video.imagem)
-                              )
+                                  image: NetworkImage( video.imagem ),
+                                )
                             ),
                           ),
                           ListTile(
@@ -87,6 +98,7 @@ class _InicioState extends State<Inicio> {
                         ],
                       ),
                     );
+
                   },
                   separatorBuilder: (context, index) => Divider(
                     height: 2,
@@ -97,7 +109,7 @@ class _InicioState extends State<Inicio> {
 
             }else{
               return Center(
-                child: Text("Nenhum Dado a ser exibido!"),
+                child: Text("Nenhum dado a ser exibido!"),
               );
             }
             break;
